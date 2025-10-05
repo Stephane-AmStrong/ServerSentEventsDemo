@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace ServerSentEventsDemo;
 
 public static class ServiceCollectionExtensions
@@ -47,6 +49,11 @@ public static class ServiceCollectionExtensions
         // Un service par type de DTO
         services.AddSingleton<IEventStreamingService<ServerResponse>, EventStreamingService<ServerResponse>>();
         services.AddSingleton<IEventStreamingService<ClientResponse>, EventStreamingService<ClientResponse>>();
+        
+        services.AddScoped<SseStreamer>(provider => new SseStreamer(new SseStreamingOptions
+        (
+            JsonOptions : new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+        )));
         
         return services;
     }
