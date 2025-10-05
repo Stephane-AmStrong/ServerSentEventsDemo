@@ -46,6 +46,7 @@ public static class ServiceCollectionExtensions
     {
         // Un service par type de DTO
         services.AddSingleton<IEventStreamingService<ServerResponse>, EventStreamingService<ServerResponse>>();
+        services.AddSingleton<IEventStreamingService<ClientResponse>, EventStreamingService<ClientResponse>>();
         
         return services;
     }

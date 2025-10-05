@@ -1,9 +1,10 @@
 namespace ServerSentEventsDemo;
 
-public record BroadcastMessage<TDto,TType>(TDto Dto, TType SseType) where TDto : IBaseDto where TType : ISseType;
+public record BroadcastMessage<TDto>(TDto Dto, BroadcastMessageType MessageType) where TDto : IBaseDto;
 
-public interface ISseType;
-
-public record CreatedMessageType: ISseType;
-public record UpdatedMessageType: ISseType;
-public record DeletedMessageType: ISseType;
+public enum BroadcastMessageType
+{
+    Created,
+    Updated,
+    Deleted
+}

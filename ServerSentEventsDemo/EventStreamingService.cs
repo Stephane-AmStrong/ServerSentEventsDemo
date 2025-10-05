@@ -4,19 +4,18 @@ namespace ServerSentEventsDemo;
 
 public class EventStreamingService<TDto> : IEventStreamingService<TDto> where TDto : IBaseDto
 {
-    private readonly Channel<BroadcastMessage<TDto, ISseType>> _channel = Channel.CreateUnbounded<BroadcastMessage<TDto, ISseType>>(new UnboundedChannelOptions
+    private readonly Channel<BroadcastMessage<TDto>> _channel = Channel.CreateUnbounded<BroadcastMessage<TDto>>(new UnboundedChannelOptions
     {
         SingleReader = false,
         SingleWriter = true,
         AllowSynchronousContinuations = true
     });
 
-    public ValueTask PublishAsync<TType>(BroadcastMessage<TDto, TType> evt, CancellationToken cancellationToken = default)
-        where TType : ISseType
+    public ValueTask BroadcastAsync(BroadcastMessage<TDto> evt, CancellationToken cancellationToken)
     {
-        var baseEvent = new BroadcastMessage<TDto, ISseType>(evt.Dto, evt.SseType);
+        var baseEvent = new BroadcastMessage<TDto>(evt.Dto, evt.MessageType);
         return _channel.Writer.WriteAsync(baseEvent, cancellationToken);
     }
 
-    public ChannelReader<BroadcastMessage<TDto, ISseType>> Events => _channel.Reader;
+    public ChannelReader<BroadcastMessage<TDto>> Events => _channel.Reader;
 }
